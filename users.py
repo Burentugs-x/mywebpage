@@ -1,9 +1,16 @@
 
 import sqlite3
 import hashlib
+import os
+
+# Get the base directory of the current script
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+# Construct the database path dynamically
+db_path = os.path.join(basedir, 'db', 'titanic.sqlite')
 
 # Connect to the database
-conn = sqlite3.connect('titanic.sqlite')
+conn = sqlite3.connect(db_path)
 cursor = conn.cursor()
 
 # Create the users table if it doesn't exist

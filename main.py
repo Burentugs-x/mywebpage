@@ -2,11 +2,16 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 import hashlib
 import pandas as pd
 import sqlite3
-
+import os
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Needed for session management
 
+# Get the base directory of the current script
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+# Construct the database path dynamically
+db_path = os.path.join(basedir, 'db', 'titanic.sqlite')
 
 @app.route('/second')
 def hello_world():
@@ -27,7 +32,7 @@ def render_form():
 
 @app.route('/')
 def about():
-    conn = sqlite3.connect('titanic.sqlite')
+    conn = sqlite3.connect(db_path)
     # Read the 'titanic' table into a pandas DataFrame
     df = pd.read_sql('SELECT Name, Age FROM titanic', conn)
     name = df["Name"][0]
@@ -46,7 +51,7 @@ def submit_post():
         post_content = request.form['post']
         post_type = request.form['type']
 
-        conn = sqlite3.connect('titanic.sqlite')
+        conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
 
         # Ensure the post table exists (you might want to modify or remove this part)
@@ -70,7 +75,7 @@ def about_me():
         hobby_insert = request.form['hobby']
         project_insert = request.form['project']
 
-        conn = sqlite3.connect('titanic.sqlite')
+        conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
 
         # Ensure the me table exists (you might want to modify or remove this part)
@@ -86,7 +91,7 @@ def about_me():
 
 @app.route('/blogs')
 def show_blogs():
-    conn = sqlite3.connect('titanic.sqlite')
+    conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
     # Fetch all posts from the database
@@ -101,7 +106,7 @@ def show_blogs():
 
 @app.route('/test')
 def test_db():
-    conn = sqlite3.connect('titanic.sqlite')
+    conn = sqlite3.connect(db_path)
     df = pd.read_sql('SELECT Name, Age FROM titanic', conn)
     name = df["Name"][0]
     return f'Hello from Flask! {name}'
@@ -115,7 +120,7 @@ def register():
         password = request.form['password']
         hashed_password = hashlib.sha256(password.encode()).hexdigest()
 
-        conn = sqlite3.connect('titanic.sqlite')
+        conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
         
         try:
@@ -139,7 +144,7 @@ def submit_contact():
     message = request.form.get('message')
 
     # Insert data into the contacts table
-    conn = sqlite3.connect('titanic.sqlite' , check_same_thread=False)
+    conn = sqlite3.connect(db_path , check_same_thread=False)
     cursor = conn.cursor()
     cursor.execute('''
         INSERT INTO contacts (name, email, message)
@@ -155,7 +160,7 @@ def submit_contact():
 @app.route('/admin')
 def admin():
     # Retrieve all contact records
-    conn = sqlite3.connect('titanic.sqlite', check_same_thread=False)
+    conn = sqlite3.connect(db_path, check_same_thread=False)
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM contacts')
     contacts = cursor.fetchall()
@@ -172,7 +177,7 @@ def login():
         password = request.form['password']
         hashed_password = hashlib.sha256(password.encode()).hexdigest()
 
-        conn = sqlite3.connect('titanic.sqlite')
+        conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
         
         cursor.execute("SELECT * FROM users WHERE username = ? AND password = ?", (username, hashed_password))
