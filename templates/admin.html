@@ -1,14 +1,28 @@
-<form method="POST" action="{{ url_for('update_contact') }}">
-        <div class="w3-row-padding" style="margin:0 -16px 8px -16px">
-          <div class="w3-half">
-            <input class="w3-input w3-border" type="text" placeholder="Name" required name="Name">
-          </div>
-          <div class="w3-half">
-            <input class="w3-input w3-border" type="text" placeholder="Email" required name="Email">
-          </div>
-        </div>
-        <input class="w3-input w3-border" type="text" placeholder="Message" required name="Message">
-        <button class="w3-button w3-black w3-right w3-section" type="submit">
-          <i class="fa fa-paper-plane"></i> SEND MESSAGE
-        </button>
-      </form>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Page</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Contact Submissions</h1>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Message</th>
+            <th>Submitted At</th>
+        </tr>
+        {% for contact in contacts %}
+        <tr>
+            <td>{{ contact[0] }}</td>
+            <td>{{ contact[1] }}</td>
+            <td>{{ contact[2] }}</td>
+            <td>{{ contact[3] }}</td>
+            <td>{{ contact[4] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
