@@ -206,7 +206,7 @@ def logout():
 # Route to log out
 @app.route('/pokemon')
 def pokemon_display():
-    return "hi this is going to be a pokemon app"
+    return render_template('pokemon.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
