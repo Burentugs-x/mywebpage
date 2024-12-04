@@ -205,11 +205,6 @@ def logout():
     flash("Logged out successfully.")
     return redirect(url_for('login'))
 
-# Route to log out
-@app.route('/pokemon')
-def pokemon_display():
-    return render_template('pokemon.html')
-
 # Fetch list of Pokémon names
 def fetch_pokemon_names():
     url = "https://pokeapi.co/api/v2/pokemon?limit=1000"
@@ -230,18 +225,18 @@ def fetch_pokemon_sprite(pokemon_name):
     else:
         return None
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/pokemon", methods=["GET", "POST"])
 def index():
     pokemon_names = fetch_pokemon_names()
     selected_pokemon = None
     sprite_url = None
 
     if request.method == "POST":
-        selected_pokemon = request.form.get("pokemon_name").lower()
+        selected_pokemon = request.form.get("pokemon_name")
         sprite_url = fetch_pokemon_sprite(selected_pokemon)
 
     return render_template(
-        "index.html",
+        "pokemon.html",
         pokemon_names=pokemon_names,
         selected_pokemon=selected_pokemon,
         sprite_url=sprite_url,
@@ -255,9 +250,6 @@ def sprite(pokemon_name):
         if response.status_code == 200:
             return Response(response.content, mimetype="image/png")
     return "Sprite not found", 404
-
-if __name__ == "__main__":
-    app.run(debug=True)
 
 if __name__ == '__main__':
     app.run(debug=True)
