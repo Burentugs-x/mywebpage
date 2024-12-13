@@ -258,7 +258,7 @@ def admin_required(f):
                 SELECT roles.role_name
                 FROM users
                 JOIN roles ON users.role_id = roles.id
-                WHERE users.username = ? AND roles.id = 2
+                WHERE users.username = ? AND roles.id = 1
             ''', (session['username'],))
             user_role = cursor.fetchone()
         finally:

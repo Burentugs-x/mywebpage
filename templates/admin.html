@@ -6,6 +6,7 @@
 </head>
 <body>
     <h1>Database Admin Panel</h1>
+    
     <!-- Dropdown to select a table -->
     <form method="POST" action="{{ url_for('admin') }}">
         <label for="table_name">Select a Table:</label>
@@ -18,26 +19,38 @@
         </select>
         <button type="submit">View Table</button>
     </form>
+    
     {% if selected_table %}
     <h2>Data for Table: {{ selected_table }}</h2>
-    <table border="1">
-        <thead>
-            <tr>
-                {% for column in table_columns %}
-                <th>{{ column }}</th>
+    <form method="POST" action="{{ url_for('update_table', table_name=selected_table) }}">
+        <table border="1">
+            <thead>
+                <tr>
+                    {% for column in table_columns %}
+                    <th>{{ column }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row_index, row in enumerate(table_data) %}
+                <tr>
+                    {% for col_index, cell in enumerate(row) %}
+                    <td>
+                        <input 
+                            type="text" 
+                            name="data[{{ row_index }}][{{ table_columns[col_index] }}]" 
+                            value="{{ cell }}" 
+                            {% if table_columns[col_index] == 'id' %}readonly{% endif %}  <!-- Make ID read-only -->
+                        />
+                    </td>
+                    {% endfor %}
+                </tr>
                 {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for row in table_data %}
-            <tr>
-                {% for cell in row %}
-                <td>{{ cell }}</td>
-                {% endfor %}
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </tbody>
+            
+        </table>
+        <button type="submit">Save Changes</button>
+    </form>
     {% endif %}
 </body>
 </html>
